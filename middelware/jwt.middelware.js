@@ -12,7 +12,6 @@ const verifyToken = (req, res, next) => {
   }
 
   const token = authHeader.split(" ")[1];
-  console.log("Token:", token); // Debugging log
 
   if (!token) {
     return res.status(401).json({
@@ -20,12 +19,8 @@ const verifyToken = (req, res, next) => {
     });
   }
 
-  // Debugging log for JWT_SECRET
-  console.log("JWT Secret:", process.env.JWT_SECRET_KEY);
-
   jwt.verify(token, process.env.JWT_SECRET_KEY, (err, user) => {
     if (err) {
-      console.log("JWT Verification Error:", err.message); // Debugging log
       return res.status(403).json({
         message: "Token invalid!",
       });

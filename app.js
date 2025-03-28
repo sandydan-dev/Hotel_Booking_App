@@ -1,13 +1,11 @@
 const express = require("express");
 const dotenv = require("dotenv");
-dotenv.config(); // Load environment variables
+dotenv.config(); 
 
 const app = express();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 
-// Debugging log for JWT_SECRET
-console.log("JWT Secret from .env:", process.env.JWT_SECRET);
 
 // connection to DB
 const connetionDB = require("./config/db.connection");
