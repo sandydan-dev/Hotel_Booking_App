@@ -1,22 +1,50 @@
 const Hotel = require("../model/hotel.model");
-const axios = require("axios"); // Import axios for HTTP requests
 
 //? create hotel data
 const createHotelData = async (req, res) => {
   try {
-    // Fetch user ID from user service
-    const userServiceUrl = "http://user-service-url/api/users"; // Replace with actual user service URL
-    const userResponse = await axios.get(`${userServiceUrl}/${req.body.userId}`);
-    const userId = userResponse.data.id;
+    // Destructure fields from req.body
+    const {
+      hotelName,
+      location,
+      address,
+      contactNumber,
+      description,
+      checkinTime,
+      checkoutTime,
+      pricePerNight,
+      availableRoomsCount,
+      amenities,
+      hotelType,
+      rating,
+    } = req.body;
 
-    // Attach userId to the hotel data
-    const newHotel = new Hotel({ ...req.body, userId });
+    // Create hotel data object
+    const hotelData = {
+      hotelName,
+      location,
+      address,
+      contactNumber,
+      description,
+      checkinTime,
+      checkoutTime,
+      pricePerNight,
+      availableRoomsCount,
+      amenities,
+      hotelType,
+      rating,
+    };
+
+    const newHotel = new Hotel(hotelData);
     const savedHotel = await newHotel.save();
-    res.status(200).json(savedHotel);
+
+    return res
+      .status(201)
+      .json({ message: "Hotel Data created successfully", savedHotel });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       status: "fail",
-      message: "something went wrong",
+      message: "Something went wrong",
       error: error.message,
     });
   }

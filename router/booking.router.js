@@ -7,37 +7,41 @@ const verifyToken = require("../middelware/jwt.middelware");
 const {
   createBooking,
   getAllBookedDataDetails,
+  getBookingsById,
   updateBookingData,
   updateBookingStatus,
   deleteBookingData,
   getConfirmedBookingData,
-  getCancelledBookingData
+  getCancelledBookingData,
+  getPendingBookingData,
 } = require("../controller/booking.controller");
 
 // routes
 //? create booking
-router.post("/create-booking", verifyToken, createBooking);
+router.post("/create_booking", verifyToken, createBooking);
 
 //? Get all booked details
-router.get("/booking-details", getAllBookedDataDetails);
+router.get("/booking_details", getAllBookedDataDetails);
 
+//? get booked data by id
+router.get('/booking_id/:id', getBookingsById)
 
 //? update booking data
-router.patch("/update-booking/:id", updateBookingData);
+router.patch("/update_booking/:id", updateBookingData);
 
 //? update booking status
-router.patch("/update-booking-status/:id", updateBookingStatus);
+router.patch("/update_booking-status/:id", updateBookingStatus);
 
 //? delete booking data
-router.delete("/delete-booking/:id", deleteBookingData);
+router.delete("/delete_booking/:id", deleteBookingData);
 
 //? get confirmed booking data
-router.get("/confirmed-booking", getConfirmedBookingData);
+router.get("/confirmed_booking", getConfirmedBookingData);
 
 //? get cancelled booking data
-router.get("/cancelled-booking", getCancelledBookingData);
+router.get("/cancelled_booking", getCancelledBookingData);
 
-
-
+//? get pending booking data
+router.get("/pending_booking", getPendingBookingData);
 
 module.exports = router;

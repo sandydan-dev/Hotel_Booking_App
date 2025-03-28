@@ -4,11 +4,12 @@ const axiosInstance = require("../axiosConfig/userAxios");
 //? create booking
 const createBooking = async (req, res) => {
   try {
-    const userId = req.user.id;
-    console.log("User ID from token:", userId);
+    let userServiceId = req.user.id;
 
-    // Fetch user data from user service
-    const response = await axiosInstance.get(`/userId/${userId}`, {
+    console.log("User ID from token:", userServiceId);
+
+    const response = await axiosInstance.get(`/userId/${userServiceId}`, {
+      // Updated variable name
       headers: {
         Authorization: req.headers.authorization,
       },
@@ -17,21 +18,31 @@ const createBooking = async (req, res) => {
     const userData = response.data.data;
     console.log("User Data:", userData);
 
-    const { hotelId, roomNumber, checkInDate, checkOutDate, totalPrice } =
-      req.body;
-
-    const newBooking = new Booking({
+    const {
       userId,
       hotelId,
       roomNumber,
       checkInDate,
       checkOutDate,
+      bookingDate,
       totalPrice,
+      status,
+    } = req.body;
+
+    const newBooking = new Booking({
+      userId: userServiceId,
+      hotelId,
+      roomNumber,
+      checkInDate,
+      checkOutDate,
+      bookingDate,
+      totalPrice,
+      status,
     });
     const savedBooking = await newBooking.save();
 
     const populatedBooking = await Booking.findById(savedBooking._id).populate(
-      "userId"
+      "hotelId"
     );
 
     res.status(201).json({
@@ -39,7 +50,7 @@ const createBooking = async (req, res) => {
       booking: populatedBooking,
     });
   } catch (error) {
-    console.error("Error during booking creation:", error.message);
+    console.error("Error during booking creation:", error);
     res.status(500).json({
       message: "Error occurred while creating booking",
       error: error.message,
@@ -67,6 +78,25 @@ const getAllBookedDataDetails = async (req, res) => {
       message: "Error occurred while fetching bookings data",
       error: error.message,
     });
+  }
+};
+
+//? get booking by id
+const getBookingsById = async (req, res) => {
+  try {
+    const bookId = req.params.id;
+
+    const bookedHotel = await Booking.findById(bookId);
+
+    if (!bookedHotel) {
+      return res.status(404).json({ message: "Booking Id not found" });
+    }
+
+    return res.status(200).json({ message: "Booked Id found", bookedHotel });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Error while getting booking Id", error });
   }
 };
 
@@ -178,12 +208,31 @@ const getCancelledBookingData = async (req, res) => {
   }
 };
 
+//? get pending booking data
+const getPendingBookingData = async (req, res) => {
+  try {
+    const booking = await Booking.find({ status: "pending" });
+    if (!booking) {
+      return res
+        .status(404)
+        .json({ message: "Pending Booking is not available" });
+    }
+    return res.status(200).json({ messges: "Pending Bookings", booking });
+  } catch (error) {
+    return res
+      .statu(500)
+      .json({ message: "Error while getting pending data", error });
+  }
+};
+
 module.exports = {
   createBooking,
   getAllBookedDataDetails,
+  getBookingsById,
   updateBookingData,
   updateBookingStatus,
   deleteBookingData,
   getConfirmedBookingData,
   getCancelledBookingData,
+  getPendingBookingData,
 };
