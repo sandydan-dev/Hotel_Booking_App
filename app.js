@@ -14,6 +14,7 @@ connetionDB();
 // modules imports
 const hotelRouter = require("./router/hotel.router"); // booking router
 const bookingRouter = require("./router/booking.router"); // booking router
+const feedBackRouter = require('./router/feedback.router') // feedback router
 
 // middleware
 app.use(express.json());
@@ -27,6 +28,9 @@ app.use(cookieParser());
 app.use("/api/v1/hotel", hotelRouter);
 
 //? booking routes
-app.use("/api/v1/book-hotel", bookingRouter);
+app.use("/api/v1/book_hotel", bookingRouter);
+
+//? feedback routes
+app.use('/api/v1/user_feedback', feedBackRouter)
 
 module.exports = app;

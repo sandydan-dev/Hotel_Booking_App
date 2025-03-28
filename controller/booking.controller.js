@@ -9,7 +9,6 @@ const createBooking = async (req, res) => {
     console.log("User ID from token:", userServiceId);
 
     const response = await axiosInstance.get(`/userId/${userServiceId}`, {
-      // Updated variable name
       headers: {
         Authorization: req.headers.authorization,
       },
