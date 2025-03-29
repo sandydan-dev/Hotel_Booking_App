@@ -15,6 +15,7 @@ connetionDB();
 const hotelRouter = require("./router/hotel.router"); // booking router
 const bookingRouter = require("./router/booking.router"); // booking router
 const feedBackRouter = require('./router/feedback.router') // feedback router
+// const feedbackRoutes = require("./routes/feedback.routes"); // feedback routes
 
 // middleware
 app.use(express.json());
@@ -31,6 +32,6 @@ app.use("/api/v1/hotel", hotelRouter);
 app.use("/api/v1/book_hotel", bookingRouter);
 
 //? feedback routes
-app.use('/api/v1/user_feedback', feedBackRouter)
+app.use('/api/v1/user_feedback', feedBackRouter);
 
 module.exports = app;
