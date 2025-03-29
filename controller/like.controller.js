@@ -4,12 +4,11 @@ const axiosInstance = require("../axiosConfig/userAxios");
 
 const createLike = async (req, res) => {
   try {
-    const userServiceId = req.user.id; // Extract user ID from token
-    const { hotelId } = req.body; // Assume hotelName is passed dynamically from the frontend
+    const userServiceId = req.user.id;
+    const { hotelId } = req.body;
 
     console.log("User ID from token:", userServiceId);
 
-    // Verify user exists in the user service
     const response = await axiosInstance.get(`/userId/${userServiceId}`, {
       headers: {
         Authorization: req.headers.authorization,
@@ -26,7 +25,6 @@ const createLike = async (req, res) => {
     const userData = response.data.data;
     console.log("User Data:", userData);
 
-    // Dynamically find the hotel by name or other criteria
     const hotel = await Hotel.findById(hotelId);
     if (!hotel) {
       return res.status(404).json({ message: "Hotel not found" });
@@ -66,7 +64,42 @@ const getLikedData = async (req, res) => {
   }
 };
 
+//? get details which users like the hotels list
+const userLikedHotels = async (req, res) => {
+  try {
+    const userAuthId = req.params.id;
+
+    const hotel = await Hotel.find();
+
+    if (!hotel) {
+      return res.status(404).json({ message: "not found" });
+    }
+
+    const likedRecords = [];
+
+    for (let i = 0; i < hotel.length; i++) {
+      likedRecords.push(hotel[i]._id);
+    }
+
+    const liked = await Like.find({
+      userId: userAuthId,
+      hotelId: likedRecords,
+    });
+
+    const populateHotels = await Like.find().populate("hotelId");
+
+    console.log(populateHotels);
+
+    return res
+      .status(200)
+      .json({ message: "user liked hotels", populateHotels });
+  } catch (error) {
+    return res.status(500).json({ message: "while geting liked data", error });
+  }
+};
+
 module.exports = {
   createLike,
   getLikedData,
+  userLikedHotels,
 };

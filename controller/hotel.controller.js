@@ -3,7 +3,6 @@ const Hotel = require("../model/hotel.model");
 //? create hotel data
 const createHotelData = async (req, res) => {
   try {
-    // Destructure fields from req.body
     const {
       hotelName,
       location,
@@ -19,7 +18,34 @@ const createHotelData = async (req, res) => {
       rating,
     } = req.body;
 
-    // Create hotel data object
+    if (
+      !hotelName ||
+      !location ||
+      !address ||
+      !contactNumber ||
+      !description ||
+      !checkinTime ||
+      !checkoutTime ||
+      !pricePerNight ||
+      !availableRoomsCount
+    ) {
+      return res.status(400).json({
+        message: "All required fields must be provided",
+      });
+    }
+
+    if (pricePerNight < 500 || pricePerNight > 10000) {
+      return res.status(400).json({
+        message: "Price per night must be between 500 and 10000",
+      });
+    }
+
+    if (rating && (rating < 0 || rating > 5)) {
+      return res.status(400).json({
+        message: "Rating must be between 1 and 5",
+      });
+    }
+
     const hotelData = {
       hotelName,
       location,
